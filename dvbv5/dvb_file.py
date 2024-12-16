@@ -18,13 +18,15 @@ import enum
 from ctypes import Structure, POINTER, byref, cast
 from ctypes import c_int, c_uint, c_uint16, c_uint32
 from ctypes import c_char_p, c_void_p
-from typing import List, Dict, Union
+from typing import List, Dict, Union, TYPE_CHECKING
 
 from . import libdvbv5
 from . import dvb_frontend
 from . import dvb_fe
 from . import dvb_v5_std
-from . import dvb_scan      # Only for type hints
+
+if TYPE_CHECKING:
+    from . import dvb_scan
 
 
 class c_dvb_entry(Structure):

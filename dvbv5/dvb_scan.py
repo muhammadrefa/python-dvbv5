@@ -9,13 +9,12 @@ from ctypes import c_uint, c_uint32
 from . import libdvbv5
 from . import dvb_fe
 from . import dvb_file
-from .dvb_file import c_dvb_entry
 
 
 class c_dvb_v5_descriptors(Structure):
     _fields_ = [
         ('delivery_systems', c_uint32),
-        ('entry', POINTER(c_dvb_entry)),
+        ('entry', POINTER(dvb_file.c_dvb_entry)),
         ('num_entry', c_uint),
         ('pat', c_void_p),      # *dvb_table_pat
         ('vct', c_void_p),      # *atsc_table_vct
