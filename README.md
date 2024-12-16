@@ -23,6 +23,9 @@ or by using it as a wrapper and code in C-style
 from dvbv5 import dvb_dev
 
 dvb = dvb_dev.DVBDevice()           # dvb_dev allocation handled by constructor
-dvb = dvb_dev.dvb_dev_find(dvb)
+dvb_dev.dvb_dev_find(dvb)
 # dvb_dev deallocation handled by destructor
 ```
+
+## Examples
+Examples can be found in the [`examples`](examples) directory
