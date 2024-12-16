@@ -10,12 +10,16 @@ class DVBv5Descriptor(object):
     def __init__(self, fd: dvb_dev.DVBOpenDescriptor):
         self._dvb_open_descriptor: dvb_dev.DVBOpenDescriptor = fd
 
+    def __del__(self):
+        self.dvb_dev_close()
+
     def dvb_dev_close(self) -> None:
         """
         Closes a dvb device
-        :return:
         """
-        dvb_dev.dvb_dev_close(self._dvb_open_descriptor)
+        if self._dvb_open_descriptor is not None:
+            dvb_dev.dvb_dev_close(self._dvb_open_descriptor)
+            self._dvb_open_descriptor = None
 
     def dvb_dev_scan(self, entry: dvb_file.DVBEntry, check_frontend: Callable[[Any, dvb_fe.DVBv5FEParms], int],
                      args: Any, other_nit: int, timeout_multiply: int) -> dvb_scan.DVBv5Descriptors:

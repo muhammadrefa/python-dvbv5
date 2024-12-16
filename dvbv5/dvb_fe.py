@@ -90,6 +90,14 @@ class DVBv5FEParms(object):
         """
         return [dvb_frontend.FEDeliverySystem(self._dvb_v5_fe_parms.system[i]) for i in range(0, self._dvb_v5_fe_parms.num_systems)]
 
+    @property
+    def abort(self):
+        return self._dvb_v5_fe_parms.abort
+
+    @abort.setter
+    def abort(self, value: int):
+        self._dvb_v5_fe_parms.abort = value
+
     # TODO: Access other struct fields
 
 
