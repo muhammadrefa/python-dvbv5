@@ -19,6 +19,7 @@ from . import libdvbv5
 from . import dvb_fe
 from . import dvb_file
 from . import dvb_scan
+from ._dvbv3 import dmx
 
 
 class c_dvb_dev_list(Structure):
@@ -306,7 +307,7 @@ def dvb_dev_open(dvb: DVBDevice, sysname: str, flags: int) -> DVBOpenDescriptor:
     c_dvb_dev_open.restype = POINTER(c_dvb_open_descriptor)
     _d = c_dvb_dev_open(dvb.C_POINTER, sysname.encode(), flags)
     if not _d:
-        raise Exception("Failed to open dvb device!")
+        raise Exception(f"Failed to open ({sysname}) dvb device!")
     return DVBOpenDescriptor(_d.contents)
 
 
@@ -317,6 +318,44 @@ def dvb_dev_close(open_dev: DVBOpenDescriptor) -> None:
     :return:
     """
     libdvbv5.dvb_dev_close(open_dev.C_POINTER)
+
+
+def dvb_dev_set_bufsize(open_dev: DVBOpenDescriptor, buffersize: int) -> None:
+    """
+    Start a demux or dvr buffer size
+    :param open_dev: DVBOpenDescriptor object
+    :param buffersize: Size of the buffer to be allocated to store the filtered data.
+
+    This is a wrapper function for DMX_SET_BUFFER_SIZE ioctl.
+
+    See http://linuxtv.org/downloads/v4l-dvb-apis/dvb_demux.html for more details.
+
+    valid only for DVB_DEVICE_DEMUX or DVB_DEVICE_DVR.
+    """
+    ret = libdvbv5.dvb_dev_set_bufsize(open_dev.C_POINTER, buffersize)
+    if ret < 0:
+        raise Exception("Failed to set buffer size!")
+
+
+def dvb_dev_dmx_set_pesfilter(open_dev: DVBOpenDescriptor, pid: int, pes_type: dmx.dmx_ts_pes,
+                              output: dmx.dmx_output, buffersize: int) -> None:
+    """
+    Start a filter for a MPEG-TS Packetized Elementary Stream (PES)
+    :param open_dev: DVBOpenDescriptor object
+    :param pid: Program ID to filter. Use 0x2000 to select all PIDs
+    :param pes_type: type of the PID (DMX_PES_VIDEO, DMX_PES_AUDIO, DMX_PES_OTHER, etc).
+    :param output: Where the data will be output (DMX_OUT_TS_TAP, DMX_OUT_DECODER, etc).
+    :param buffersize: Size of the buffer to be allocated to store the filtered data.
+
+    This is a wrapper function for DMX_SET_PES_FILTER and DMX_SET_BUFFER_SIZE ioctls.
+
+    See http://linuxtv.org/downloads/v4l-dvb-apis/dvb_demux.html for more details.
+
+    valid only for DVB_DEVICE_DEMUX.
+    """
+    ret = libdvbv5.dvb_dev_dmx_set_pesfilter(open_dev.C_POINTER, pid, pes_type, output, buffersize)
+    if ret < 0:
+        raise Exception("Failed to start filter!")
 
 
 def dvb_dev_dmx_get_pmt_pid(open_dev: DVBOpenDescriptor, sid: int) -> int:

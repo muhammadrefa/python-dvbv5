@@ -218,6 +218,6 @@ def dvb_fe_set_default_country(parms: DVBv5FEParms, country: str) -> None:
     :param country: default country, in ISO 3166-1 two letter code. If None, default charset is guessed from locale
     environment variables.
     """
-    ret = libdvbv5.dvb_fe_set_default_country(parms.C_POINTER, country.encode())
+    ret = libdvbv5.dvb_fe_set_default_country(parms.C_POINTER, country.encode() if country is not None else None)
     if ret:
         raise ValueError("Country unknown!")

@@ -16,7 +16,7 @@ from __future__ import annotations
 import enum
 
 from ctypes import Structure, POINTER, byref, cast
-from ctypes import c_int, c_uint, c_uint16, c_uint32
+from ctypes import c_int, c_uint, c_uint8, c_uint16, c_uint32
 from ctypes import c_char_p, c_void_p
 from typing import List, Dict, Union, TYPE_CHECKING
 
@@ -29,6 +29,13 @@ if TYPE_CHECKING:
     from . import dvb_scan
 
 
+class c_dvb_elementary_pid(Structure):
+    _fields_ = [
+        ('type', c_uint8),
+        ('pid', c_uint16),
+    ]
+
+
 class c_dvb_entry(Structure):
     _fields_ = [
         ('props', dvb_frontend.c_dtv_property * dvb_frontend.DTV_MAX_COMMAND),
@@ -37,7 +44,7 @@ class c_dvb_entry(Structure):
         ('service_id', c_uint16),
         ('video_pid', POINTER(c_uint16)),
         ('audio_pid', POINTER(c_uint16)),
-        ('other_el_pid', c_void_p),     # *dvb_elementary_pid
+        ('other_el_pid', POINTER(c_dvb_elementary_pid)),     # *dvb_elementary_pid
         ('video_pid_len', c_uint),
         ('audio_pid_len', c_uint),
         ('other_el_pid_len', c_uint),
@@ -59,6 +66,28 @@ class c_dvb_file(Structure):
         ('n_entries', c_int),
         ('first_entry', POINTER(c_dvb_entry)),
     ]
+
+
+class DVBElementaryPID(object):
+    """
+    associates an elementary stream type with its PID
+    """
+    def __init__(self, struct: c_dvb_elementary_pid=None):
+        self._dvb_elementary_pid: c_dvb_elementary_pid = None
+
+    @property
+    def type(self) -> int:
+        """
+        Elementary stream type
+        """
+        return self._dvb_elementary_pid.type
+
+    @property
+    def pid(self) -> int:
+        """
+        Elementary stream Program ID
+        """
+        return self._dvb_elementary_pid.pid
 
 
 class DVBEntry(object):
@@ -122,28 +151,42 @@ class DVBEntry(object):
             _audio_pid.append(self._dvb_entry.audio_pid[i])
         return _audio_pid
 
-    # TODO: other_el_pid
+    @property
+    def other_el_pid(self) -> List[DVBElementaryPID]:
+        """
+        List of non-audio/video program IDs inside a service
+        """
+        _other_el_pid = list()
+        for i in range(0, self._dvb_entry.other_el_pid_len):
+            _other_el_pid.append(DVBElementaryPID(self._dvb_entry.other_el_pid[i]))
+        return _other_el_pid
 
     @property
     def channel(self) -> str:
         """
         Channel name
         """
-        return self._dvb_entry.channel.decode()
+        if self._dvb_entry.channel:
+            return self._dvb_entry.channel.decode()
+        return None
 
     @property
     def vchannel(self) -> str:
         """
         String representing the Number of the channel
         """
-        return self._dvb_entry.vchannel.decode()
+        if self._dvb_entry.vchannel:
+            return self._dvb_entry.vchannel.decode()
+        return None
 
     @property
     def location(self) -> str:
         """
         String representing the location of the channel
         """
-        return self._dvb_entry.location.decode()
+        if self._dvb_entry.location:
+            return self._dvb_entry.location.decode()
+        return None
 
     @property
     def sat_number(self) -> int:
@@ -253,7 +296,7 @@ def dvb_read_file_format(filename: str, delivery_system: dvb_frontend.FEDelivery
     c_dvb_read_file_format = libdvbv5.dvb_read_file_format
     c_dvb_read_file_format.restype = POINTER(c_dvb_file)
     _c_dvb_file = c_dvb_read_file_format(filename.encode(), delivery_system, fmt)
-    if _c_dvb_file is None:
+    if not _c_dvb_file:
         raise Exception("Read file failed!")
     return DVBFile(_c_dvb_file.contents)
 
