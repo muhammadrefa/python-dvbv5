@@ -102,6 +102,20 @@ class DVBv5FEParms(object):
 
 
 def dvb_set_compat_delivery_system(parms: DVBv5FEParms, desired_systems: dvb_frontend.FEDeliverySystem) -> None:
+    """
+    Sets the delivery system
+    :param parms: DVBv5FEParms object of the opened device
+    :param desired_systems: delivery system to be selected
+
+    This function changes the delivery system of the frontend. By default,
+    the libdvbv5 will use the first available delivery system. If another
+    delivery system is desirable, this function should be called before being
+    able to store the properties for the new delivery system via
+    dvb_fe_store_parm().
+
+    This function is an enhanced version of dvb_set_sys(). It has an special
+    logic inside to work with Kernels that supports only DVBv3.
+    """
     ret = libdvbv5.dvb_set_compat_delivery_system(parms.C_POINTER, desired_systems)
     if ret < 0:
         raise ValueError("Set compat delivery system unsuccessful!")
