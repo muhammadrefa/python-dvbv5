@@ -66,18 +66,15 @@ class DVBDevChangeType(enum.IntEnum):
     """
     Describes the type of change to be notifier_delay
     """
+
     DVB_DEV_ADD = 0,
-    """
-    New device detected
-    """
+    """New device detected"""
+
     DVB_DEV_CHANGE = enum.auto(),
-    """
-    Device has changed something
-    """
+    """Device has changed something"""
+
     DVB_DEV_REMOVE = enum.auto()
-    """
-    A hot-pluggable device was removed
-    """
+    """A hot-pluggable device was removed"""
 
 
 class DVBDevList(object):

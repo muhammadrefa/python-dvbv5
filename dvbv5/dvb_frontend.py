@@ -28,14 +28,13 @@ class FECaps(enum.IntEnum):
     """
     Frontend capabilities
     """
+
     FE_IS_STUPID = 0,
-    """
-    There's something wrong at the frontend, and it can't report its capabilities.
-    """
+    """There's something wrong at the frontend, and it can't report its capabilities."""
+
     FE_CAN_INVERSION_AUTO = 0x1,
-    """
-    Can auto-detect frequency spectral band inversion
-    """
+    """Can auto-detect frequency spectral band inversion"""
+
     FE_CAN_FEC_1_2 = 0x2,
     FE_CAN_FEC_2_3 = 0x4,
     FE_CAN_FEC_3_4 = 0x8,
@@ -58,28 +57,24 @@ class FECaps(enum.IntEnum):
     FE_CAN_HIERARCHY_AUTO = 0x100000,
     FE_CAN_8VSB = 0x200000,
     FE_CAN_16VSB = 0x400000,
+
     FE_HAS_EXTENDED_CAPS = 0x800000,
-    """
-    Unused
-    """
+    """Unused"""
+
     FE_CAN_MULTISTREAM = 0x4000000,
     FE_CAN_TURBO_FEC = 0x8000000,
+
     FE_CAN_2G_MODULATION = 0x10000000,
-    """
-    Supports "2nd generation" modulation, e. g. DVB-S2, DVB-T2, DVB-C2
-    """
+    """Supports "2nd generation" modulation, e. g. DVB-S2, DVB-T2, DVB-C2"""
+
     FE_NEEDS_BENDING = 0x20000000,
-    """
-    Unused
-    """
+    """Unused"""
+
     FE_CAN_RECOVER = 0x40000000,
-    """
-    Can recover from a cable unplug automatically
-    """
+    """Can recover from a cable unplug automatically"""
+
     FE_CAN_MUTE_TS = 0x80000000,
-    """
-    Can stop spurious TS data output
-    """
+    """Can stop spurious TS data output"""
 
 
 class FEType(enum.IntEnum):
@@ -211,52 +206,49 @@ class FEDeliverySystem(enum.IntEnum):
     """
     Type of the delivery system
     """
+
     SYS_UNDEFINED = 0,
-    """
-    Undefined standard. Generally, indicates an error
-    """
+    """Undefined standard. Generally, indicates an error"""
+
     SYS_DVBC_ANNEX_A = enum.auto(),
-    """
-    Cable TV: DVB-C following ITU-T J.83 Annex A spec
-    """
+    """Cable TV: DVB-C following ITU-T J.83 Annex A spec"""
+
     SYS_DVBC_ANNEX_B = enum.auto(),
-    """
-    Cable TV: DVB-C following ITU-T J.83 Annex B spec (ClearQAM)
-    """
+    """Cable TV: DVB-C following ITU-T J.83 Annex B spec (ClearQAM)"""
+
     SYS_DVBT = enum.auto(),
+
     SYS_DSS = enum.auto(),
-    """
-    Satellite TV: DSS (not fully supported)
-    """
+    """Satellite TV: DSS (not fully supported)"""
+
     SYS_DVBS = enum.auto(),
     SYS_DVBS2 = enum.auto(),
+
     SYS_DVBH = enum.auto(),
-    """
-    Terrestrial TV (mobile): DVB-H (standard deprecated)
-    """
+    """Terrestrial TV (mobile): DVB-H (standard deprecated)"""
+
     SYS_ISDBT = enum.auto(),
     SYS_ISDBS = enum.auto(),
+
     SYS_ISDBC = enum.auto(),
-    """
-    Cable TV: ISDB-C (no drivers yet)
-    """
+    """Cable TV: ISDB-C (no drivers yet)"""
+
     SYS_ATSC = enum.auto(),
     SYS_ATSCMH = enum.auto(),
     SYS_DTMB = enum.auto(),
+
     SYS_CMMB = enum.auto(),
-    """
-    Terrestrial TV (mobile): CMMB (not fully supported)
-    """
+    """Terrestrial TV (mobile): CMMB (not fully supported)"""
+
     SYS_DAB = enum.auto(),
-    """
-    Digital audio: DAB (not fully supported)
-    """
+    """Digital audio: DAB (not fully supported)"""
+
     SYS_DVBT2 = enum.auto(),
     SYS_TURBO = enum.auto(),
+
     SYS_DVBC_ANNEX_C = enum.auto(),
-    """
-    Cable TV: DVB-C following ITU-T J.83 Annex C spec
-    """
+    """Cable TV: DVB-C following ITU-T J.83 Annex C spec"""
+
     SYS_DVBC2 = enum.auto(),
 
     # Backward compatibility
